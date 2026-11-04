@@ -26,6 +26,12 @@ final GoRouter _router = GoRouter(
         initialSection: PortfolioSection.repositories,
       ),
     ),
+    GoRoute(
+      path: '/crud',
+      builder: (context, state) => const PortfolioPage(
+        initialSection: PortfolioSection.crud,
+      ),
+    ),
   ],
 );
 
