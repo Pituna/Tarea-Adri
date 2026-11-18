@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'services/auth_service.dart';
 import 'services/storage_service.dart';
+import 'services/auth_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -76,6 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
         result['token'].toString().isNotEmpty) {
 
       await storageService.saveToken(result['token']);
+
+// Actualizar el estado de la sesión
+      authController.login();
 
       if (!mounted) return;
 

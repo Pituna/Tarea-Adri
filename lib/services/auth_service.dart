@@ -78,6 +78,8 @@ class AuthService {
   }
 
   // COMPROBAR SI EL TOKEN ES VÁLIDO
+  
+  // COMPROBAR SI EL TOKEN ES VÁLIDO
   Future<Map<String, dynamic>> checkToken(String token) async {
 
     try {
@@ -93,15 +95,18 @@ class AuthService {
       return {
         'success': response.statusCode == 200,
         'message': data['message'] ?? 'Respuesta desconocida',
+        'statusCode': response.statusCode,
       };
 
     } catch (e) {
       return {
         'success': false,
         'message': 'Error al comprobar el token.',
+        'statusCode': null,
       };
     }
   }
+
 
   // OBTENER MENSAJE DE BIENVENIDA
   Future<Map<String, dynamic>> getWelcomeMessage(String token) async {
