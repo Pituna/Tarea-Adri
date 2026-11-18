@@ -2,10 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'header_section.dart';
 import 'hobbies_section.dart';
 import 'repositories_section.dart';
-import 'bottom_navigation.dart';
 import 'crud_screen.dart';
 import 'services/auth_controller.dart';
 
@@ -46,12 +44,15 @@ class _PortfolioPageState extends State<PortfolioPage> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
+
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
@@ -63,6 +64,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 ),
               ),
             ),
+
             ListTile(
               leading: const Icon(Icons.interests),
               title: const Text('Aficiones'),
@@ -72,6 +74,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 context.go('/hobbies');
               },
             ),
+
             ListTile(
               leading: const Icon(Icons.folder),
               title: const Text('Repo'),
@@ -81,6 +84,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 context.go('/repositories');
               },
             ),
+
             ListTile(
               leading: const Icon(Icons.edit_note),
               title: const Text('CRUD de elementos'),
@@ -90,39 +94,36 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 context.go('/crud');
               },
             ),
+
             const Divider(),
+
             ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
+              leading: const Icon(
+                Icons.logout,
+                color: Colors.red,
+              ),
               title: const Text(
                 'Cerrar sesión',
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(
+                  color: Colors.red,
+                ),
               ),
               onTap: _cerrarSesion,
             ),
           ],
         ),
       ),
+
+      // Solo mostramos el contenido de la sección seleccionada.
+      // No mostramos la fotografía ni la cabecera principal.
+      // Tampoco mostramos los botones inferiores.
+
       body: SafeArea(
-        child: Column(
-          children: [
-            const HeaderSection(),
-            Expanded(
-              child: selectedSection == PortfolioSection.hobbies
-                  ? const HobbiesSection()
-                  : selectedSection == PortfolioSection.repositories
-                      ? const RepositoriesSection()
-                      : const CrudScreen(),
-            ),
-            BottomNavigation(
-              selectedSection: selectedSection,
-              onSectionSelected: (section) {
-                setState(() {
-                  selectedSection = section;
-                });
-              },
-            ),
-          ],
-        ),
+        child: selectedSection == PortfolioSection.hobbies
+            ? const HobbiesSection()
+            : selectedSection == PortfolioSection.repositories
+                ? const RepositoriesSection()
+                : const CrudScreen(),
       ),
     );
   }
