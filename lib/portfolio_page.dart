@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'header_section.dart';
 import 'hobbies_section.dart';
 import 'repositories_section.dart';
+import 'bottom_navigation.dart';
 import 'crud_screen.dart';
 import 'services/auth_controller.dart';
 
@@ -38,6 +40,10 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Comprobamos si estamos en la sección de aficiones.
+    final bool mostrarElementosPrincipales =
+        selectedSection == PortfolioSection.hobbies;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mi portfolio'),
@@ -114,16 +120,35 @@ class _PortfolioPageState extends State<PortfolioPage> {
         ),
       ),
 
-      // Solo mostramos el contenido de la sección seleccionada.
-      // No mostramos la fotografía ni la cabecera principal.
-      // Tampoco mostramos los botones inferiores.
-
       body: SafeArea(
-        child: selectedSection == PortfolioSection.hobbies
-            ? const HobbiesSection()
-            : selectedSection == PortfolioSection.repositories
-                ? const RepositoriesSection()
-                : const CrudScreen(),
+        child: Column(
+          children: [
+
+            // CABECERA Y FOTO: solamente en AFICIONES.
+            if (mostrarElementosPrincipales)
+              const HeaderSection(),
+
+            // CONTENIDO DE LA SECCIÓN SELECCIONADA.
+            Expanded(
+              child: selectedSection == PortfolioSection.hobbies
+                  ? const HobbiesSection()
+                  : selectedSection == PortfolioSection.repositories
+                      ? const RepositoriesSection()
+                      : const CrudScreen(),
+            ),
+
+            // BOTONES INFERIORES: solamente en AFICIONES.
+            if (mostrarElementosPrincipales)
+              BottomNavigation(
+                selectedSection: selectedSection,
+                onSectionSelected: (section) {
+                  setState(() {
+                    selectedSection = section;
+                  });
+                },
+              ),
+          ],
+        ),
       ),
     );
   }
