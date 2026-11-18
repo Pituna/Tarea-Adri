@@ -1,8 +1,54 @@
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'services/auth_service.dart';
+import 'services/storage_service.dart';
+
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
+
+  Future<void> _comenzar(BuildContext context) async {
+    final storageService = StorageService();
+    final authService = AuthService();
+
+    final token = await storageService.getToken();
+
+    if (token == null || token.isEmpty) {
+      context.go('/login');
+      return;
+    }
+
+    final result = await authService.getWelcomeMessage(token);
+
+    if (!context.mounted) return;
+
+    if (result['success'] == true) {
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Bienvenido'),
+          content: Text(result['message'] ?? 'Bienvenido a Los Manoletes'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Continuar'),
+            ),
+          ],
+        ),
+      );
+
+      if (context.mounted) {
+        context.go('/hobbies');
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message'] ?? 'Error al conectar con la API'),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,16 +59,27 @@ class WelcomePage extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF061C2D), Color(0xFF075080), Color(0xFF031625)],
+            colors: [
+              Color(0xFF061C2D),
+              Color(0xFF075080),
+              Color(0xFF031625),
+            ],
           ),
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 18,
+            ),
             child: Column(
               children: [
                 const Spacer(flex: 2),
-                const Icon(Icons.fitness_center, size: 82, color: Colors.white),
+                const Icon(
+                  Icons.fitness_center,
+                  size: 82,
+                  color: Colors.white,
+                ),
                 const SizedBox(height: 12),
                 const FittedBox(
                   fit: BoxFit.scaleDown,
@@ -61,14 +118,17 @@ class WelcomePage extends StatelessWidget {
                 const Text(
                   'Tu objetivo, nuestro compromiso',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                  ),
                 ),
                 const Spacer(flex: 1),
                 SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: () => context.go('/hobbies'),
+                    onPressed: () => _comenzar(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0788E8),
                       foregroundColor: Colors.white,
@@ -77,7 +137,10 @@ class WelcomePage extends StatelessWidget {
                       ),
                       elevation: 3,
                     ),
-                    child: const Text('Comenzar', style: TextStyle(fontSize: 16)),
+                    child: const Text(
+                      'Comenzar',
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
                 const Spacer(),

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,6 +7,7 @@ import 'hobbies_section.dart';
 import 'repositories_section.dart';
 import 'bottom_navigation.dart';
 import 'crud_screen.dart';
+import 'services/auth_controller.dart';
 
 enum PortfolioSection {
   hobbies,
@@ -28,6 +30,14 @@ class PortfolioPage extends StatefulWidget {
 class _PortfolioPageState extends State<PortfolioPage> {
   late PortfolioSection selectedSection = widget.initialSection;
 
+  Future<void> _cerrarSesion() async {
+    await authController.logout();
+
+    if (!mounted) return;
+
+    context.go('/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +56,10 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   'Navegación del portfolio',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
                 ),
               ),
             ),
@@ -77,6 +90,15 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 context.go('/crud');
               },
             ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text(
+                'Cerrar sesión',
+                style: TextStyle(color: Colors.red),
+              ),
+              onTap: _cerrarSesion,
+            ),
           ],
         ),
       ),
@@ -84,7 +106,6 @@ class _PortfolioPageState extends State<PortfolioPage> {
         child: Column(
           children: [
             const HeaderSection(),
-
             Expanded(
               child: selectedSection == PortfolioSection.hobbies
                   ? const HobbiesSection()
@@ -92,7 +113,6 @@ class _PortfolioPageState extends State<PortfolioPage> {
                       ? const RepositoriesSection()
                       : const CrudScreen(),
             ),
-
             BottomNavigation(
               selectedSection: selectedSection,
               onSectionSelected: (section) {
