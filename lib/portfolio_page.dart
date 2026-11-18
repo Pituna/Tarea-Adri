@@ -61,7 +61,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
             ),
             ListTile(
               leading: const Icon(Icons.folder),
-              title: const Text('Mi super repositorio'),
+              title: const Text('Repo'),
               selected: selectedSection == PortfolioSection.repositories,
               onTap: () {
                 Navigator.pop(context);
